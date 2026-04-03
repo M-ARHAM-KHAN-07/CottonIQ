@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CottonIQ — Market Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0F0E0C;
+    --paper: #F4EFE6;
+    --ivory: #FDFAF5;
+    --rust: #B85C2C;
+    --rust-pale: #D4784A;
+    --gold: #B8942A;
+    --gold-pale: #D4AE4A;
+    --sage: #5C7055;
+    --slate: #4A5568;
+    --mist: #E8E2D8;
+    --border: rgba(15,14,12,0.1);
+    --border-strong: rgba(15,14,12,0.18);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Grain */
+  body::after {
+    content:'';
+    position:fixed; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:9999; opacity:.5;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; justify-content:space-between; align-items:center;
+    padding: 20px 64px;
+    background: rgba(244,239,230,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight:700;
+    letter-spacing: -0.01em;
+  }
+  .nav-brand span { color: var(--rust); }
+
+  .nav-links {
+    display:flex; gap:32px;
+    font-family:'DM Mono', monospace;
+    font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+    list-style:none;
+  }
+  .nav-links a { color: var(--slate); text-decoration:none; transition:color .2s; }
+  .nav-links a:hover { color: var(--rust); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 55% 45%;
+    padding-top: 72px;
+  }
+
+  .hero-left {
+    padding: 80px 64px 80px 80px;
+    display:flex; flex-direction:column; justify-content:center;
+    border-right: 1px solid var(--border);
+  }
+
+  .hero-right {
+    background: var(--ink);
+    display:flex; flex-direction:column; justify-content:center;
+    padding: 64px 52px;
+    position:relative; overflow:hidden;
+  }
+
+  .hero-right::before {
+    content:'';
+    position:absolute; top:-100px; left:-100px;
+    width:500px; height:500px;
+    background: radial-gradient(circle, rgba(184,92,44,.18) 0%, transparent 65%);
+    pointer-events:none;
+  }
+  .hero-right::after {
+    content:'';
+    position:absolute; bottom:-80px; right:-80px;
+    width:360px; height:360px;
+    background: radial-gradient(circle, rgba(184,148,42,.1) 0%, transparent 65%);
+    pointer-events:none;
+  }
+
+  .eyebrow {
+    font-family:'DM Mono', monospace;
+    font-size:10px; letter-spacing:.22em; text-transform:uppercase;
+    color: var(--rust); margin-bottom:28px;
+    opacity:0; animation: fadeUp .6s ease .15s forwards;
+  }
+
+  h1 {
+    font-family:'Cormorant Garamond', serif;
+    font-size: clamp(60px,6.5vw,92px);
+    font-weight:700; line-height:.92;
+    letter-spacing:-.02em;
+    margin-bottom:10px;
+    opacity:0; animation: fadeUp .7s ease .3s forwards;
+  }
+  h1 em { color:var(--rust); font-style:normal; }
+
+  .hero-tagline {
+    font-family:'DM Mono', monospace;
+    font-size:12px; letter-spacing:.08em;
+    color:#8A8070; margin-bottom:36px;
+    opacity:0; animation: fadeUp .7s ease .4s forwards;
+  }
+
+  .hero-desc {
+    font-size:15.5px; color:#4A4540; max-width:460px;
+    line-height:1.85; margin-bottom:52px;
+    opacity:0; animation: fadeUp .7s ease .5s forwards;
+  }
+
+  .hero-stats {
+    display:flex; gap:0;
+    border: 1px solid var(--border-strong);
+    border-radius:4px; overflow:hidden;
+    opacity:0; animation: fadeUp .7s ease .65s forwards;
+  }
+
+  .hstat {
+    flex:1; padding:20px 24px;
+    border-right:1px solid var(--border-strong);
+    text-align:center;
+  }
+  .hstat:last-child { border-right:none; }
+
+  .hstat-n {
+    font-family:'Cormorant Garamond', serif;
+    font-size:34px; font-weight:700;
+    color:var(--rust); line-height:1;
+    display:block; margin-bottom:4px;
+  }
+  .hstat-l {
+    font-family:'DM Mono', monospace;
+    font-size:9px; letter-spacing:.14em;
+    text-transform:uppercase; color:#8A8070;
+  }
+
+  /* right-side pipeline */
+  .pipe-header {
+    font-family:'DM Mono', monospace;
+    font-size:9px; letter-spacing:.2em; text-transform:uppercase;
+    color:rgba(255,255,255,.25); margin-bottom:28px;
+    opacity:0; animation: fadeIn .8s ease .9s forwards;
+  }
+
+  .pipe-stack { display:flex; flex-direction:column; gap:3px; }
+
+  .pipe-row {
+    display:grid; grid-template-columns:40px 1fr auto;
+    gap:14px; align-items:center;
+    padding:13px 18px;
+    border:1px solid rgba(255,255,255,.07);
+    background:rgba(255,255,255,.025);
+    border-radius:4px;
+    cursor:default; transition:all .25s;
+    opacity:0; animation: slideIn .5s ease forwards;
+  }
+  .pipe-row:nth-child(1){animation-delay:.95s}
+  .pipe-row:nth-child(2){animation-delay:1.05s}
+  .pipe-row:nth-child(3){animation-delay:1.15s}
+  .pipe-row:nth-child(4){animation-delay:1.25s}
+  .pipe-row:nth-child(5){animation-delay:1.35s}
+  .pipe-row:nth-child(6){animation-delay:1.45s}
+  .pipe-row:nth-child(7){animation-delay:1.55s}
+
+  .pipe-row:hover {
+    border-color:rgba(184,92,44,.4);
+    background:rgba(184,92,44,.06);
+    transform:translateX(5px);
+  }
+
+  .pipe-ico {
+    width:36px; height:36px; border-radius:6px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:15px; flex-shrink:0;
+  }
+  .ico-a{background:rgba(92,112,85,.22)}
+  .ico-b{background:rgba(184,92,44,.18)}
+  .ico-c{background:rgba(100,145,200,.18)}
+  .ico-d{background:rgba(184,148,42,.18)}
+  .ico-e{background:rgba(130,80,180,.18)}
+  .ico-f{background:rgba(80,160,160,.18)}
+  .ico-g{background:rgba(220,100,130,.18)}
+
+  .pipe-info {}
+  .pipe-name {
+    font-family:'DM Mono', monospace; font-size:11.5px;
+    color:rgba(255,255,255,.85); font-weight:500;
+  }
+  .pipe-sub {
+    font-family:'DM Mono', monospace; font-size:9px;
+    color:rgba(255,255,255,.28); margin-top:1px;
+  }
+
+  .pipe-badge {
+    font-family:'DM Mono', monospace; font-size:8px;
+    letter-spacing:.1em; text-transform:uppercase;
+    padding:3px 8px; border-radius:2px; white-space:nowrap;
+  }
+  .badge-live { background:rgba(92,112,85,.25); color:#90B885; border:1px solid rgba(92,112,85,.35); }
+  .badge-ml   { background:rgba(184,148,42,.2); color:#D4AE4A; border:1px solid rgba(184,148,42,.3); }
+  .badge-viz  { background:rgba(100,145,200,.2); color:#90AADD; border:1px solid rgba(100,145,200,.3); }
+  .badge-new  { background:rgba(184,92,44,.2); color:#E07A4A; border:1px solid rgba(184,92,44,.3); }
+
+  /* ── SHARED SECTION ── */
+  section { padding:96px 80px; border-top:1px solid var(--border); }
+  .dark-section { background:var(--ink); color:var(--paper); }
+  .tinted-section { background:#F9F4EC; }
+  .gold-section { background:#0D0C0A; }
+
+  .s-label {
+    font-family:'DM Mono', monospace;
+    font-size:9px; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--rust); margin-bottom:14px;
+  }
+  .dark-section .s-label, .gold-section .s-label { color:var(--rust-pale); }
+
+  h2 {
+    font-family:'Cormorant Garamond', serif;
+    font-size:clamp(38px,4.5vw,60px);
+    font-weight:700; line-height:1.05;
+    letter-spacing:-.015em; margin-bottom:18px;
+  }
+  .dark-section h2, .gold-section h2 { color:var(--paper); }
+
+  .s-intro {
+    font-size:15px; color:#5A5248; max-width:620px;
+    line-height:1.85; margin-bottom:60px;
+  }
+  .dark-section .s-intro { color:rgba(244,239,230,.5); }
+  .gold-section .s-intro { color:rgba(244,239,230,.45); }
+
+  /* ── PIPELINE COMPONENTS ── */
+  .comp-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px; background:var(--border-strong);
+    border:1px solid var(--border-strong);
+    border-radius:6px; overflow:hidden;
+  }
+
+  .comp-card {
+    background:var(--ivory); padding:36px 32px;
+    transition:background .2s; position:relative; overflow:hidden;
+  }
+  .comp-card::after {
+    content:''; position:absolute;
+    left:0; bottom:0; top:0; width:3px;
+    background:var(--rust); transform:scaleY(0);
+    transition:transform .3s ease; transform-origin:bottom;
+  }
+  .comp-card:hover { background:#FFF8F0; }
+  .comp-card:hover::after { transform:scaleY(1); }
+
+  .comp-n {
+    font-family:'Cormorant Garamond', serif;
+    font-size:52px; font-weight:700;
+    color:rgba(184,92,44,.1); line-height:1;
+    margin-bottom:14px;
+  }
+  .comp-card h3 {
+    font-family:'DM Sans', sans-serif; font-size:14px;
+    font-weight:500; margin-bottom:10px; color:var(--ink);
+  }
+  .comp-card p { font-size:13px; color:#6A6258; line-height:1.75; margin-bottom:18px; }
+
+  .tag-row { display:flex; flex-wrap:wrap; gap:5px; }
+  .ctag {
+    font-family:'DM Mono', monospace; font-size:8.5px;
+    letter-spacing:.08em; padding:3px 9px;
+    border-radius:2px; background:var(--mist);
+    border:1px solid rgba(184,92,44,.15); color:#7A7068;
+  }
+
+  /* ── ML SECTION ── */
+  .ml-grid {
+    display:grid; grid-template-columns:1fr 1fr; gap:2px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:8px; overflow:hidden;
+    margin-bottom:48px;
+  }
+
+  .ml-card {
+    background:rgba(255,255,255,.03); padding:44px 40px;
+    transition:background .25s; position:relative; overflow:hidden;
+    border-right:1px solid rgba(255,255,255,.06);
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .ml-card:hover { background:rgba(255,255,255,.055); }
+
+  .ml-card-badge {
+    display:inline-block;
+    font-family:'DM Mono', monospace; font-size:9px;
+    letter-spacing:.16em; text-transform:uppercase;
+    color:var(--gold-pale); border:1px solid rgba(184,148,42,.35);
+    padding:4px 12px; border-radius:2px; margin-bottom:20px;
+  }
+
+  .ml-card h3 {
+    font-family:'Cormorant Garamond', serif;
+    font-size:28px; font-weight:700;
+    color:var(--paper); margin-bottom:12px; line-height:1.1;
+  }
+  .ml-card p { font-size:13.5px; color:rgba(244,239,230,.5); line-height:1.8; }
+
+  .ml-card .feat-list {
+    margin-top:24px; display:flex; flex-direction:column; gap:8px;
+  }
+  .feat-item {
+    display:flex; align-items:flex-start; gap:10px;
+    font-family:'DM Mono', monospace; font-size:11px;
+    color:rgba(244,239,230,.45); line-height:1.5;
+  }
+  .feat-dot {
+    width:6px; height:6px; border-radius:50%;
+    background:var(--gold); flex-shrink:0; margin-top:4px;
+  }
+
+  .fe-section {
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:6px; padding:36px 40px;
+    background:rgba(255,255,255,.02);
+  }
+
+  .fe-section h4 {
+    font-family:'Cormorant Garamond', serif;
+    font-size:22px; font-weight:700;
+    color:var(--paper); margin-bottom:6px;
+  }
+  .fe-section > p {
+    font-size:13px; color:rgba(244,239,230,.4);
+    margin-bottom:28px; line-height:1.7;
+  }
+
+  .fe-grid {
+    display:grid; grid-template-columns:repeat(3,1fr); gap:16px;
+  }
+
+  .fe-group {}
+  .fe-group-title {
+    font-family:'DM Mono', monospace; font-size:9px;
+    letter-spacing:.18em; text-transform:uppercase;
+    color:rgba(184,148,42,.7); margin-bottom:10px;
+    padding-bottom:6px; border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .fe-chip {
+    font-family:'DM Mono', monospace; font-size:10px;
+    color:rgba(244,239,230,.5); line-height:1.9;
+    display:block;
+  }
+  .fe-chip::before { content:'→ '; color:rgba(184,92,44,.5); }
+
+  /* ── STREAMLIT SECTION ── */
+  .dash-grid {
+    display:grid; grid-template-columns:1fr 1fr; gap:24px;
+    margin-bottom:48px;
+  }
+
+  .dash-card {
+    border:1px solid var(--border-strong);
+    border-radius:6px; overflow:hidden;
+    background:white; transition:all .25s;
+  }
+  .dash-card:hover {
+    transform:translateY(-4px);
+    box-shadow:0 20px 50px rgba(15,14,12,.1);
+  }
+
+  .dash-screen {
+    height:180px; position:relative; overflow:hidden;
+    background:var(--ink);
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* Simulated chart visuals */
+  .chart-sim {
+    width:100%; height:100%; position:relative; padding:16px 20px;
+  }
+
+  .chart-line {
+    position:absolute; bottom:30px; left:20px; right:20px;
+    height:2px; overflow:visible;
+  }
+
+  /* SVG chart mockups */
+  .dash-screen svg { width:100%; height:100%; }
+
+  .dash-body { padding:24px 28px; }
+  .dash-body-tag {
+    font-family:'DM Mono', monospace; font-size:9px;
+    letter-spacing:.18em; text-transform:uppercase;
+    color:var(--rust); margin-bottom:8px;
+  }
+  .dash-body h3 {
+    font-family:'Cormorant Garamond', serif;
+    font-size:20px; font-weight:700; margin-bottom:8px;
+  }
+  .dash-body p { font-size:12.5px; color:#6A6258; line-height:1.7; }
+
+  .dash-tags { display:flex; flex-wrap:wrap; gap:5px; margin-top:14px; }
+  .dash-tag {
+    font-family:'DM Mono', monospace; font-size:8.5px;
+    letter-spacing:.06em; padding:3px 9px;
+    background:var(--mist); border:1px solid var(--border);
+    color:#7A7068; border-radius:2px;
+  }
+
+  .dash-full {
+    border:1px solid var(--border-strong);
+    border-radius:6px; background:white; padding:36px;
+    display:grid; grid-template-columns:auto 1fr; gap:32px;
+    align-items:center;
+  }
+
+  .dash-full-left {
+    width:200px; height:140px; background:var(--ink);
+    border-radius:4px; overflow:hidden; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .dash-full-right h3 {
+    font-family:'Cormorant Garamond', serif;
+    font-size:22px; font-weight:700; margin-bottom:8px;
+  }
+  .dash-full-right p { font-size:13px; color:#6A6258; line-height:1.75; }
+
+  /* ── DB SECTION ── */
+  .db-panel {
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:8px; padding:48px;
+  }
+
+  .db-layers { display:flex; flex-direction:column; gap:1px; }
+
+  .db-row {
+    display:grid; grid-template-columns:120px 1fr;
+    gap:28px; align-items:start;
+    padding:22px 0; border-bottom:1px solid rgba(255,255,255,.05);
+  }
+  .db-row:last-child { border-bottom:none; }
+
+  .db-row-label {
+    font-family:'DM Mono', monospace;
+    font-size:9px; letter-spacing:.2em; text-transform:uppercase;
+    color:rgba(244,239,230,.22); padding-top:6px;
+  }
+
+  .db-chips { display:flex; flex-wrap:wrap; gap:7px; }
+
+  .dbchip {
+    font-family:'DM Mono', monospace; font-size:10.5px;
+    padding:6px 14px; border-radius:3px; border:1px solid;
+    cursor:default; transition:all .2s;
+  }
+  .dbchip:hover { transform:translateY(-2px); }
+
+  .dbc-src  { border-color:rgba(92,112,85,.45); color:#8FB085; background:rgba(92,112,85,.08); }
+  .dbc-ml   { border-color:rgba(184,148,42,.45); color:#C8A860; background:rgba(184,148,42,.08); }
+  .dbc-trn  { border-color:rgba(184,92,44,.45); color:#D4784A; background:rgba(184,92,44,.08); }
+  .dbc-str  { border-color:rgba(100,140,200,.45); color:#90AADD; background:rgba(100,140,200,.08); }
+  .dbc-srv  { border-color:rgba(130,180,130,.45); color:#90C890; background:rgba(130,180,130,.08); }
+  .dbc-viz  { border-color:rgba(200,120,160,.45); color:#D890B8; background:rgba(200,120,160,.08); }
+
+  .arch-arrow { text-align:center; padding:4px 0; color:rgba(255,255,255,.1); font-size:24px; }
+
+  /* ── TECH ── */
+  .tech-grid {
+    display:grid; grid-template-columns:repeat(4,1fr);
+    gap:1px; background:var(--border);
+    border:1px solid var(--border); border-radius:6px; overflow:hidden;
+  }
+
+  .tech-item {
+    background:var(--ivory); padding:28px 24px; transition:background .2s;
+  }
+  .tech-item:hover { background:#FFF8F0; }
+
+  .tech-cat {
+    font-family:'DM Mono', monospace; font-size:8.5px;
+    letter-spacing:.2em; text-transform:uppercase;
+    color:var(--rust); margin-bottom:10px;
+  }
+  .tech-item h4 {
+    font-family:'DM Sans', sans-serif; font-size:13.5px;
+    font-weight:500; color:var(--ink); margin-bottom:6px;
+  }
+  .tech-item p { font-size:12px; color:#7A7268; line-height:1.65; }
+
+  /* ── REPO STRUCTURE ── */
+  .repo-box {
+    background: var(--ink); border-radius:8px;
+    padding:40px 44px; font-family:'DM Mono', monospace;
+    font-size:12.5px; line-height:2;
+    border:1px solid rgba(255,255,255,.06);
+  }
+  .repo-box .rdir  { color:rgba(184,148,42,.9); }
+  .repo-box .rfile { color:rgba(244,239,230,.6); }
+  .repo-box .rcom  { color:rgba(244,239,230,.22); }
+  .repo-box .rhigh { color:#D4784A; font-weight:500; }
+
+  /* ── FOOTER ── */
+  footer {
+    background:var(--ink); padding:56px 80px;
+    display:flex; justify-content:space-between; align-items:center;
+    border-top: 1px solid rgba(255,255,255,.06);
+  }
+
+  .footer-brand {
+    font-family:'Cormorant Garamond', serif;
+    font-size:26px; font-weight:700; color:var(--paper);
+  }
+  .footer-brand span { color:var(--rust); }
+
+  .footer-mid {
+    font-family:'DM Mono', monospace; font-size:10px;
+    letter-spacing:.12em; color:rgba(244,239,230,.25); text-align:center;
+  }
+
+  .footer-links {
+    display:flex; gap:28px; list-style:none;
+    font-family:'DM Mono', monospace; font-size:10px; letter-spacing:.1em;
+  }
+  .footer-links a { color:rgba(244,239,230,.35); text-decoration:none; transition:color .2s; }
+  .footer-links a:hover { color:var(--rust-pale); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(18px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity:0; } to { opacity:1; }
+  }
+  @keyframes slideIn {
+    from { opacity:0; transform:translateX(-14px); }
+    to   { opacity:1; transform:translateX(0); }
+  }
+
+  .reveal {
+    opacity:0; transform:translateY(22px);
+    transition: opacity .75s ease, transform .75s ease;
+  }
+  .reveal.vis { opacity:1; transform:translateY(0); }
+  .reveal-d2 { transition-delay:.1s; }
+  .reveal-d3 { transition-delay:.2s; }
+  .reveal-d4 { transition-delay:.3s; }
+
+  @media(max-width:960px){
+    .hero { grid-template-columns:1fr; }
+    .hero-right { display:none; }
+    section { padding:64px 32px; }
+    .comp-grid, .ml-grid, .dash-grid, .tech-grid { grid-template-columns:1fr; }
+    .fe-grid { grid-template-columns:1fr 1fr; }
+    nav { padding:16px 24px; }
+    .nav-links { display:none; }
+    footer { flex-direction:column; gap:20px; text-align:center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Cotton<span>IQ</span></div>
+  <ul class="nav-links">
+    <li><a href="#pipeline">Pipeline</a></li>
+    <li><a href="#ml">ML Models</a></li>
+    <li><a href="#dashboard">Dashboard</a></li>
+    <li><a href="#database">Database</a></li>
+    <li><a href="#stack">Stack</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="eyebrow">Portfolio Project · Data Engineering &amp; ML</div>
+    <h1>Cotton<em>IQ</em></h1>
+    <div class="hero-tagline">// Market Intelligence Platform</div>
+    <p class="hero-desc">
+      An end-to-end automated system that collects global cotton market data from
+      four distinct sources, feeds it through XGBoost prediction models, and
+      surfaces everything through a live Streamlit analytics dashboard.
+    </p>
+    <div class="hero-stats">
+      <div class="hstat">
+        <span class="hstat-n">4</span>
+        <span class="hstat-l">Data Sources</span>
+      </div>
+      <div class="hstat">
+        <span class="hstat-n">2</span>
+        <span class="hstat-l">ML Models</span>
+      </div>
+      <div class="hstat">
+        <span class="hstat-n">70+</span>
+        <span class="hstat-l">Features</span>
+      </div>
+      <div class="hstat">
+        <span class="hstat-n">∞</span>
+        <span class="hstat-l">Daily Auto</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="pipe-header">// Full System Components</div>
+    <div class="pipe-stack">
+      <div class="pipe-row">
+        <div class="pipe-ico ico-a">🌾</div>
+        <div class="pipe-info">
+          <div class="pipe-name">USDA FAS API</div>
+          <div class="pipe-sub">Weekly export sales · 8 commodity codes</div>
+        </div>
+        <span class="pipe-badge badge-live">Live</span>
+      </div>
+      <div class="pipe-row">
+        <div class="pipe-ico ico-b">📄</div>
+        <div class="pipe-info">
+          <div class="pipe-name">Cotlook PDF Scraper</div>
+          <div class="pipe-sub">Adaptive parser · 5 PDF structure types</div>
+        </div>
+        <span class="pipe-badge badge-live">Live</span>
+      </div>
+      <div class="pipe-row">
+        <div class="pipe-ico ico-c">🤖</div>
+        <div class="pipe-info">
+          <div class="pipe-name">CCF Selenium Bot</div>
+          <div class="pipe-sub">ECharts JS injection · 70+ yarn features</div>
+        </div>
+        <span class="pipe-badge badge-live">Live</span>
+      </div>
+      <div class="pipe-row">
+        <div class="pipe-ico ico-d">📊</div>
+        <div class="pipe-info">
+          <div class="pipe-name">CFTC COT Reports</div>
+          <div class="pipe-sub">Legacy &amp; disaggregated futures data</div>
+        </div>
+        <span class="pipe-badge badge-live">Live</span>
+      </div>
+      <div class="pipe-row">
+        <div class="pipe-ico ico-e">🧠</div>
+        <div class="pipe-info">
+          <div class="pipe-name">XGBoost Price Model</div>
+          <div class="pipe-sub">Custom feature engineering · lagged + COT</div>
+        </div>
+        <span class="pipe-badge badge-ml">ML</span>
+      </div>
+      <div class="pipe-row">
+        <div class="pipe-ico ico-f">📈</div>
+        <div class="pipe-info">
+          <div class="pipe-name">XGBoost OI Model</div>
+          <div class="pipe-sub">Open interest prediction · export inputs</div>
+        </div>
+        <span class="pipe-badge badge-ml">ML</span>
+      </div>
+      <div class="pipe-row">
+        <div class="pipe-ico ico-g">🖥️</div>
+        <div class="pipe-info">
+          <div class="pipe-name">Streamlit Dashboard</div>
+          <div class="pipe-sub">5 live views · predictions + market data</div>
+        </div>
+        <span class="pipe-badge badge-viz">Viz</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PIPELINE COMPONENTS -->
+<section id="pipeline" class="tinted-section">
+  <div class="s-label">// Data Pipeline</div>
+  <h2>Four sources.<br>One platform.</h2>
+  <p class="s-intro">Each pipeline component handles a completely different source type — REST API, PDF documents, a JavaScript-rendered web app, and government report files. Every component feeds the same database.</p>
+
+  <div class="comp-grid reveal">
+    <div class="comp-card">
+      <div class="comp-n">01</div>
+      <h3>USDA Export Sales API</h3>
+      <p>Fetches weekly cotton export data for 8 commodity codes across two marketing years. Computes marketing year, week number, and grand totals — then stages before promoting to the main table.</p>
+      <div class="tag-row">
+        <span class="ctag">requests</span><span class="ctag">pandas</span>
+        <span class="ctag">psycopg2</span><span class="ctag">incremental load</span>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-n">02</div>
+      <h3>Cotlook PDF Parser</h3>
+      <p>Auto-detects PDF structure type (single-year, dual-year, CIF Europe, dual-index, multi-index) and routes to the correct parser. Outputs price, change, and shipment data for 20+ cotton growths per document.</p>
+      <div class="tag-row">
+        <span class="ctag">pdfplumber</span><span class="ctag">regex</span>
+        <span class="ctag">numpy</span><span class="ctag">adaptive routing</span>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-n">03</div>
+      <h3>CCF Selenium Web Bot</h3>
+      <p>Logs into CCF Group, navigates to ECharts dashboards, and extracts 70+ yarn price series via JavaScript injection. Chrome → Firefox fallback, virtual display support, and full crash recovery.</p>
+      <div class="tag-row">
+        <span class="ctag">Selenium</span><span class="ctag">ECharts JS</span>
+        <span class="ctag">headless</span><span class="ctag">upsert</span>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-n">04</div>
+      <h3>CFTC COT Ingestion</h3>
+      <p>Pulls legacy and disaggregated Commitments of Traders reports. Normalises 30+ column name variants, filters for current-year data, and bulk-loads to the production reporting table.</p>
+      <div class="tag-row">
+        <span class="ctag">cot_reports</span><span class="ctag">SQLAlchemy</span>
+        <span class="ctag">column normalisation</span>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-n">05</div>
+      <h3>Contract Metadata Engine</h3>
+      <p>Computes First Notice Dates for the next 6 active cotton futures contracts, accounting for US federal holidays across all years. Inserts only net-new contracts — never duplicates.</p>
+      <div class="tag-row">
+        <span class="ctag">holidays</span><span class="ctag">BDay</span>
+        <span class="ctag">calendar logic</span>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-n">06</div>
+      <h3>Materialized View Layer</h3>
+      <p>An 8-CTE SQL view aggregates grand totals, computes Shipment % of Final against a 5-year historical average, and auto-refreshes after every pipeline run to serve the latest week's KPIs.</p>
+      <div class="tag-row">
+        <span class="ctag">PostgreSQL</span><span class="ctag">8 CTEs</span>
+        <span class="ctag">REFRESH MATERIALIZED VIEW</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ML MODELS -->
+<section id="ml" class="gold-section">
+  <div class="s-label">// Machine Learning</div>
+  <h2>Two XGBoost models.<br>Built from scratch.</h2>
+  <p class="s-intro">Both models were trained on the data this pipeline collects. Feature engineering was done manually — drawing on domain knowledge of how cotton market signals interact across time horizons.</p>
+
+  <div class="ml-grid reveal">
+    <div class="ml-card">
+      <div class="ml-card-badge">Model 01 · Regression</div>
+      <h3>Cotton Price<br>Prediction</h3>
+      <p>Predicts the Cotlook A Index price using a combination of lagged price signals, COT positioning, export sales momentum, and seasonal patterns.</p>
+      <div class="feat-list">
+        <div class="feat-item"><div class="feat-dot"></div>Lagged Cotlook A Index values (t-1, t-2, t-4, t-8)</div>
+        <div class="feat-item"><div class="feat-dot"></div>Rolling price averages (4-week, 8-week, 12-week)</div>
+        <div class="feat-item"><div class="feat-dot"></div>CFTC net commercial / non-commercial positioning</div>
+        <div class="feat-item"><div class="feat-dot"></div>USDA cumulative export commitments &amp; net sales</div>
+        <div class="feat-item"><div class="feat-dot"></div>Marketing year week number (seasonal signal)</div>
+      </div>
+    </div>
+
+    <div class="ml-card" style="border-right:none;">
+      <div class="ml-card-badge">Model 02 · Regression</div>
+      <h3>Open Interest<br>Prediction</h3>
+      <p>Predicts cotton futures open interest levels, capturing changes in market participation driven by speculative positioning and fundamental export signals.</p>
+      <div class="feat-list">
+        <div class="feat-item"><div class="feat-dot"></div>Lagged open interest values (t-1, t-2, t-4)</div>
+        <div class="feat-item"><div class="feat-dot"></div>Rolling OI averages and rate-of-change features</div>
+        <div class="feat-item"><div class="feat-dot"></div>COT gross longs, gross shorts, spreading positions</div>
+        <div class="feat-item"><div class="feat-dot"></div>Weekly export sales (USDA) as demand signal</div>
+        <div class="feat-item"><div class="feat-dot"></div>Calendar week and marketing year position</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature Engineering Detail -->
+  <div class="fe-section reveal reveal-d2">
+    <h4>Feature Engineering Breakdown</h4>
+    <p>All features were hand-crafted — no automated feature selection libraries. Each group reflects a deliberate hypothesis about what drives cotton prices and open interest.</p>
+    <div class="fe-grid">
+      <div class="fe-group">
+        <div class="fe-group-title">Time-Series Features</div>
+        <span class="fe-chip">Price lag t-1, t-2, t-4, t-8</span>
+        <span class="fe-chip">OI lag t-1, t-2, t-4</span>
+        <span class="fe-chip">4-week rolling mean</span>
+        <span class="fe-chip">8-week rolling mean</span>
+        <span class="fe-chip">12-week rolling mean</span>
+        <span class="fe-chip">Week-over-week change</span>
+      </div>
+      <div class="fe-group">
+        <div class="fe-group-title">Market Positioning (COT)</div>
+        <span class="fe-chip">Net commercial position</span>
+        <span class="fe-chip">Net non-commercial position</span>
+        <span class="fe-chip">Gross long / gross short</span>
+        <span class="fe-chip">Spreading contracts</span>
+        <span class="fe-chip">% of open interest</span>
+        <span class="fe-chip">WoW positioning change</span>
+      </div>
+      <div class="fe-group">
+        <div class="fe-group-title">Fundamental &amp; Seasonal</div>
+        <span class="fe-chip">USDA CMY net sales</span>
+        <span class="fe-chip">USDA cumulative exports</span>
+        <span class="fe-chip">Cotlook A Index level</span>
+        <span class="fe-chip">Marketing year week no.</span>
+        <span class="fe-chip">Calendar month</span>
+        <span class="fe-chip">MY start / end flag</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STREAMLIT DASHBOARD -->
+<section id="dashboard">
+  <div class="s-label">// Analytics Dashboard</div>
+  <h2>Everything in<br>one place.</h2>
+  <p class="s-intro">A Streamlit dashboard connects directly to the PostgreSQL database and presents all pipeline outputs alongside model predictions in a single interface — updated automatically after every pipeline run.</p>
+
+  <div class="dash-grid reveal">
+
+    <div class="dash-card">
+      <div class="dash-screen">
+        <svg viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="180" fill="#0F0E0C"/>
+          <!-- grid lines -->
+          <line x1="40" y1="20" x2="40" y2="150" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+          <line x1="40" y1="150" x2="380" y2="150" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+          <line x1="40" y1="110" x2="380" y2="110" stroke="rgba(255,255,255,.04)" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="40" y1="75" x2="380" y2="75" stroke="rgba(255,255,255,.04)" stroke-width="1" stroke-dasharray="4 4"/>
+          <!-- actual price line -->
+          <polyline points="40,130 80,118 120,105 160,112 200,95 240,82 280,90 320,72 360,65 380,60"
+            fill="none" stroke="rgba(184,92,44,.7)" stroke-width="2"/>
+          <!-- predicted line -->
+          <polyline points="40,132 80,120 120,108 160,114 200,98 240,78 280,86 320,68 360,58 380,54"
+            fill="none" stroke="rgba(184,148,42,.6)" stroke-width="1.5" stroke-dasharray="5 3"/>
+          <!-- area fill actual -->
+          <polygon points="40,130 80,118 120,105 160,112 200,95 240,82 280,90 320,72 360,65 380,60 380,150 40,150"
+            fill="rgba(184,92,44,.08)"/>
+          <!-- labels -->
+          <text x="48" y="35" font-family="monospace" font-size="9" fill="rgba(255,255,255,.4)">— Actual</text>
+          <text x="100" y="35" font-family="monospace" font-size="9" fill="rgba(184,148,42,.7)">- - Predicted</text>
+          <text x="48" y="166" font-family="monospace" font-size="8" fill="rgba(255,255,255,.2)">Aug</text>
+          <text x="150" y="166" font-family="monospace" font-size="8" fill="rgba(255,255,255,.2)">Nov</text>
+          <text x="255" y="166" font-family="monospace" font-size="8" fill="rgba(255,255,255,.2)">Feb</text>
+          <text x="355" y="166" font-family="monospace" font-size="8" fill="rgba(255,255,255,.2)">May</text>
+        </svg>
+      </div>
+      <div class="dash-body">
+        <div class="dash-body-tag">View 01 · ML Predictions</div>
+        <h3>Price Prediction Chart</h3>
+        <p>Actual vs. predicted Cotlook A Index plotted over time. Model confidence bands and week-ahead forecasts shown alongside raw price history.</p>
+        <div class="dash-tags">
+          <span class="dash-tag">XGBoost</span><span class="dash-tag">Plotly</span><span class="dash-tag">Cotlook data</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-screen">
+        <svg viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="180" fill="#0F0E0C"/>
+          <!-- grid -->
+          <line x1="40" y1="150" x2="380" y2="150" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+          <line x1="40" y1="110" x2="380" y2="110" stroke="rgba(255,255,255,.04)" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="40" y1="75" x2="380" y2="75" stroke="rgba(255,255,255,.04)" stroke-width="1" stroke-dasharray="4 4"/>
+          <!-- OI bars -->
+          <rect x="52" y="85" width="22" height="65" fill="rgba(100,145,200,.35)" rx="2"/>
+          <rect x="90" y="78" width="22" height="72" fill="rgba(100,145,200,.35)" rx="2"/>
+          <rect x="128" y="92" width="22" height="58" fill="rgba(100,145,200,.35)" rx="2"/>
+          <rect x="166" y="70" width="22" height="80" fill="rgba(100,145,200,.4)" rx="2"/>
+          <rect x="204" y="62" width="22" height="88" fill="rgba(100,145,200,.45)" rx="2"/>
+          <rect x="242" y="55" width="22" height="95" fill="rgba(100,145,200,.5)" rx="2"/>
+          <rect x="280" y="68" width="22" height="82" fill="rgba(100,145,200,.4)" rx="2"/>
+          <rect x="318" y="50" width="22" height="100" fill="rgba(100,145,200,.55)" rx="2"/>
+          <!-- predicted line overlay -->
+          <polyline points="63,80 101,73 139,88 177,65 215,57 253,50 291,63 329,45"
+            fill="none" stroke="rgba(184,148,42,.7)" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <text x="48" y="35" font-family="monospace" font-size="9" fill="rgba(100,145,200,.7)">█ Open Interest</text>
+          <text x="170" y="35" font-family="monospace" font-size="9" fill="rgba(184,148,42,.7)">- - Forecast</text>
+        </svg>
+      </div>
+      <div class="dash-body">
+        <div class="dash-body-tag">View 02 · ML Predictions</div>
+        <h3>Open Interest Forecast</h3>
+        <p>Weekly futures open interest with XGBoost model forecast overlay. Useful for anticipating changes in market participation before they're reported.</p>
+        <div class="dash-tags">
+          <span class="dash-tag">XGBoost</span><span class="dash-tag">COT data</span><span class="dash-tag">Plotly</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-screen">
+        <svg viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="180" fill="#0F0E0C"/>
+          <line x1="40" y1="150" x2="380" y2="150" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+          <!-- stacked area chart for export sales -->
+          <polygon points="40,140 90,125 140,115 190,120 240,100 290,90 340,95 380,80 380,150 40,150"
+            fill="rgba(92,112,85,.2)"/>
+          <polygon points="40,130 90,112 140,100 190,105 240,82 290,70 340,75 380,60 380,150 40,150"
+            fill="rgba(92,112,85,.12)"/>
+          <polyline points="40,140 90,125 140,115 190,120 240,100 290,90 340,95 380,80"
+            fill="none" stroke="rgba(92,112,85,.8)" stroke-width="2"/>
+          <polyline points="40,130 90,112 140,100 190,105 240,82 290,70 340,75 380,60"
+            fill="none" stroke="rgba(144,176,133,.6)" stroke-width="1.5"/>
+          <!-- shipment pct badge -->
+          <rect x="280" y="18" width="90" height="30" rx="3" fill="rgba(92,112,85,.2)" stroke="rgba(92,112,85,.3)" stroke-width="1"/>
+          <text x="290" y="30" font-family="monospace" font-size="8" fill="rgba(144,176,133,.9)">Shpt % Final</text>
+          <text x="295" y="42" font-family="monospace" font-size="10" fill="rgba(144,176,133,1)" font-weight="bold">68.4%</text>
+          <text x="48" y="30" font-family="monospace" font-size="9" fill="rgba(92,112,85,.8)">— Net Sales</text>
+          <text x="48" y="43" font-family="monospace" font-size="9" fill="rgba(144,176,133,.6)">— Acum. Exports</text>
+        </svg>
+      </div>
+      <div class="dash-body">
+        <div class="dash-body-tag">View 03 · Export Sales</div>
+        <h3>USDA Export Pipeline</h3>
+        <p>Live weekly export sales and accumulated shipments from USDA. Includes the Shipment % of Final KPI computed by the materialized view.</p>
+        <div class="dash-tags">
+          <span class="dash-tag">USDA FAS</span><span class="dash-tag">Mat. View KPI</span><span class="dash-tag">weekly</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div class="dash-screen">
+        <svg viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="180" fill="#0F0E0C"/>
+          <line x1="40" y1="150" x2="380" y2="150" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+          <!-- COT stacked bar: longs positive, shorts negative -->
+          <rect x="52" y="90" width="20" height="45" fill="rgba(144,176,133,.5)" rx="2"/>
+          <rect x="52" y="135" width="20" height="30" fill="rgba(184,92,44,.4)" rx="2"/>
+          <rect x="88" y="85" width="20" height="50" fill="rgba(144,176,133,.5)" rx="2"/>
+          <rect x="88" y="135" width="20" height="25" fill="rgba(184,92,44,.4)" rx="2"/>
+          <rect x="124" y="95" width="20" height="40" fill="rgba(144,176,133,.45)" rx="2"/>
+          <rect x="124" y="135" width="20" height="35" fill="rgba(184,92,44,.45)" rx="2"/>
+          <rect x="160" y="80" width="20" height="55" fill="rgba(144,176,133,.55)" rx="2"/>
+          <rect x="160" y="135" width="20" height="20" fill="rgba(184,92,44,.35)" rx="2"/>
+          <rect x="196" y="75" width="20" height="60" fill="rgba(144,176,133,.6)" rx="2"/>
+          <rect x="196" y="135" width="20" height="22" fill="rgba(184,92,44,.35)" rx="2"/>
+          <rect x="232" y="70" width="20" height="65" fill="rgba(144,176,133,.65)" rx="2"/>
+          <rect x="232" y="135" width="20" height="28" fill="rgba(184,92,44,.4)" rx="2"/>
+          <rect x="268" y="78" width="20" height="57" fill="rgba(144,176,133,.55)" rx="2"/>
+          <rect x="268" y="135" width="20" height="32" fill="rgba(184,92,44,.45)" rx="2"/>
+          <rect x="304" y="65" width="20" height="70" fill="rgba(144,176,133,.7)" rx="2"/>
+          <rect x="304" y="135" width="20" height="18" fill="rgba(184,92,44,.3)" rx="2"/>
+          <text x="48" y="22" font-family="monospace" font-size="9" fill="rgba(144,176,133,.8)">█ Net Longs</text>
+          <text x="130" y="22" font-family="monospace" font-size="9" fill="rgba(184,92,44,.8)">█ Net Shorts</text>
+        </svg>
+      </div>
+      <div class="dash-body">
+        <div class="dash-body-tag">View 04 · COT Report</div>
+        <h3>Positioning Visualization</h3>
+        <p>CFTC Commitments of Traders data shown as net long / net short bars by trader category. Highlights speculative vs commercial positioning shifts week by week.</p>
+        <div class="dash-tags">
+          <span class="dash-tag">CFTC</span><span class="dash-tag">COT legacy</span><span class="dash-tag">disaggregated</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Extra: Yarn + Cotlook -->
+  <div class="dash-full reveal reveal-d2">
+    <div class="dash-full-left">
+      <svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+        <rect width="200" height="140" fill="#0F0E0C"/>
+        <!-- multi-line yarn prices -->
+        <polyline points="10,110 40,95 70,100 100,80 130,72 160,78 190,65" fill="none" stroke="rgba(100,145,200,.7)" stroke-width="1.5"/>
+        <polyline points="10,100 40,88 70,92 100,70 130,65 160,70 190,58" fill="none" stroke="rgba(184,148,42,.6)" stroke-width="1.5"/>
+        <polyline points="10,120 40,108 70,112 100,95 130,88 160,93 190,80" fill="none" stroke="rgba(184,92,44,.6)" stroke-width="1.5"/>
+        <polyline points="10,115 40,102 70,106 100,87 130,80 160,84 190,72" fill="none" stroke="rgba(92,112,85,.6)" stroke-width="1.5"/>
+        <text x="10" y="20" font-family="monospace" font-size="7" fill="rgba(100,145,200,.7)">India C32S</text>
+        <text x="10" y="30" font-family="monospace" font-size="7" fill="rgba(184,148,42,.7)">Pak C20S</text>
+        <text x="10" y="40" font-family="monospace" font-size="7" fill="rgba(184,92,44,.7)">China OE10S</text>
+        <text x="10" y="50" font-family="monospace" font-size="7" fill="rgba(92,112,85,.7)">Vietnam C32S</text>
+      </svg>
+    </div>
+    <div class="dash-full-right">
+      <div class="dash-body-tag">View 05 · Yarn &amp; Cotlook Prices</div>
+      <h3>CCF Yarn Prices + Cotlook Index</h3>
+      <p>Interactive multi-series chart showing 70+ global yarn price series from CCF alongside the Cotlook A Index and composition prices. Users can filter by origin country, yarn type, and date range — all sourced live from the PostgreSQL database the scraper populates.</p>
+      <div class="dash-tags" style="margin-top:14px">
+        <span class="dash-tag">CCF historical</span>
+        <span class="dash-tag">Cotlook compositions</span>
+        <span class="dash-tag">70+ series</span>
+        <span class="dash-tag">Plotly</span>
+        <span class="dash-tag">Streamlit</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATABASE -->
+<section id="database" class="dark-section">
+  <div class="s-label">// Database Architecture</div>
+  <h2>Built in layers.<br>Designed to scale.</h2>
+  <p class="s-intro">Multi-schema PostgreSQL on AWS RDS. Raw data lands in staging, gets validated, promoted to production, and then aggregated into a materialized analytics layer — all in a single automated run.</p>
+
+  <div class="db-panel reveal">
+    <div class="db-layers">
+
+      <div class="db-row">
+        <div class="db-row-label">Ingest</div>
+        <div class="db-chips">
+          <span class="dbchip dbc-src">USDA FAS REST API</span>
+          <span class="dbchip dbc-src">Cotlook PDFs</span>
+          <span class="dbchip dbc-src">CCF Web Platform</span>
+          <span class="dbchip dbc-src">CFTC COT Files</span>
+        </div>
+      </div>
+
+      <div class="arch-arrow">↓</div>
+
+      <div class="db-row">
+        <div class="db-row-label">Transform</div>
+        <div class="db-chips">
+          <span class="dbchip dbc-trn">Marketing Year Calc</span>
+          <span class="dbchip dbc-trn">Week Number Logic</span>
+          <span class="dbchip dbc-trn">PDF Structure Detection</span>
+          <span class="dbchip dbc-trn">Column Normalisation</span>
+          <span class="dbchip dbc-trn">Grand Total Aggregation</span>
+          <span class="dbchip dbc-trn">Holiday-aware FND</span>
+          <span class="dbchip dbc-ml">XGBoost Feature Engineering</span>
+          <span class="dbchip dbc-ml">Lag / Rolling / COT Features</span>
+        </div>
+      </div>
+
+      <div class="arch-arrow">↓</div>
+
+      <div class="db-row">
+        <div class="db-row-label">Stage</div>
+        <div class="db-chips">
+          <span class="dbchip dbc-str">staging.cotton_exports_incremental</span>
+          <span class="dbchip dbc-str">staging.ExportSalesGrandTotal</span>
+          <span class="dbchip dbc-str">staging.contract_codes</span>
+        </div>
+      </div>
+
+      <div class="arch-arrow">↓</div>
+
+      <div class="db-row">
+        <div class="db-row-label">Prod</div>
+        <div class="db-chips">
+          <span class="dbchip dbc-str">staging.Cotton_Exports_new</span>
+          <span class="dbchip dbc-str">prod.prices_ccf_historical</span>
+          <span class="dbchip dbc-str">prod.cftc_cot_report_legacy</span>
+          <span class="dbchip dbc-ml">prod.model_predictions</span>
+        </div>
+      </div>
+
+      <div class="arch-arrow">↓</div>
+
+      <div class="db-row">
+        <div class="db-row-label">Serve</div>
+        <div class="db-chips">
+          <span class="dbchip dbc-srv">Materialized View (latest week)</span>
+          <span class="dbchip dbc-srv">Shipment % of Final KPI</span>
+          <span class="dbchip dbc-srv">5-Year Avg Benchmark</span>
+          <span class="dbchip dbc-srv">Contract Calendar</span>
+          <span class="dbchip dbc-viz">Streamlit Dashboard</span>
+          <span class="dbchip dbc-viz">XGBoost Predictions</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section id="stack" class="tinted-section">
+  <div class="s-label">// Tech Stack</div>
+  <h2>What it's built with.</h2>
+  <p class="s-intro">A modern Python data stack from ingestion to prediction to visualisation. Everything connects — the same data that's scraped feeds the models that feed the dashboard.</p>
+
+  <div class="tech-grid reveal">
+    <div class="tech-item">
+      <div class="tech-cat">Data Collection</div>
+      <h4>requests · Selenium · pdfplumber</h4>
+      <p>REST API calls, headless browser automation with Chrome/Firefox fallback, adaptive PDF parsing.</p>
+    </div>
+    <div class="tech-item">
+      <div class="tech-cat">Transformation</div>
+      <h4>pandas · numpy · regex</h4>
+      <p>DataFrame pipelines, column normalisation, date arithmetic, numeric cleaning, type coercion.</p>
+    </div>
+    <div class="tech-item">
+      <div class="tech-cat">Machine Learning</div>
+      <h4>XGBoost · scikit-learn</h4>
+      <p>Two regression models with hand-crafted feature engineering across time-series, COT, and fundamental data.</p>
+    </div>
+    <div class="tech-item">
+      <div class="tech-cat">Visualisation</div>
+      <h4>Streamlit · Plotly</h4>
+      <p>Five-view interactive dashboard. Live DB connection. Actual vs predicted charts, COT positioning, export KPIs.</p>
+    </div>
+    <div class="tech-item">
+      <div class="tech-cat">Storage</div>
+      <h4>PostgreSQL · AWS RDS</h4>
+      <p>Multi-schema DB on AWS eu-north-1. psycopg2 for direct control, SQLAlchemy for bulk loads.</p>
+    </div>
+    <div class="tech-item">
+      <div class="tech-cat">Analytics Layer</div>
+      <h4>Materialized Views · CTEs</h4>
+      <p>8-CTE view auto-refreshed per run, computing Shipment % of Final against a 5-year historical benchmark.</p>
+    </div>
+    <div class="tech-item">
+      <div class="tech-cat">Orchestration</div>
+      <h4>Cron · Job Logging</h4>
+      <p>Scheduled daily runs. Full execution logged to staging_tables.cron_jobs_logs for observability.</p>
+    </div>
+    <div class="tech-item">
+      <div class="tech-cat">Infrastructure</div>
+      <h4>AWS RDS · Ubuntu Linux</h4>
+      <p>Production on AWS eu-north-1. Headless browser support, pyvirtualdisplay, emergency crash saves.</p>
+    </div>
+  </div>
+</section>
+
+<!-- REPO STRUCTURE -->
+<section>
+  <div class="s-label">// Project Structure</div>
+  <h2>Well organised.<br>Easy to navigate.</h2>
+  <p class="s-intro" style="margin-bottom:36px">Every component lives in its own module. The ML and dashboard layers are clearly separated from the data pipeline.</p>
+
+  <div class="repo-box reveal">
+    <span class="rdir">cottoniq/</span><br>
+    <span class="rdir">├── pipelines/</span><br>
+    <span class="rfile">│   ├── <span class="rhigh">usda_cotton_pipeline.py</span>     </span><span class="rcom"># USDA FAS API · incremental load · materialized view refresh</span><br>
+    <span class="rfile">│   ├── <span class="rhigh">cotlook_pdf_parser.py</span>       </span><span class="rcom"># Adaptive PDF extractor · 5 structure types</span><br>
+    <span class="rfile">│   ├── <span class="rhigh">ccf_scraper.py</span>              </span><span class="rcom"># Selenium bot · ECharts JS injection · 70+ yarn features</span><br>
+    <span class="rfile">│   ├── <span class="rhigh">cot_ingestion.py</span>            </span><span class="rcom"># CFTC COT reports · column normalisation · bulk load</span><br>
+    <span class="rfile">│   └── contract_codes.py           </span><span class="rcom"># Futures contract metadata · holiday-aware FND calc</span><br>
+    <span class="rdir">├── models/</span><br>
+    <span class="rfile">│   ├── <span class="rhigh">feature_engineering.py</span>      </span><span class="rcom"># Lag, rolling, COT, seasonal feature construction</span><br>
+    <span class="rfile">│   ├── <span class="rhigh">price_model.py</span>              </span><span class="rcom"># XGBoost price prediction · training + inference</span><br>
+    <span class="rfile">│   ├── <span class="rhigh">open_interest_model.py</span>      </span><span class="rcom"># XGBoost OI prediction · training + inference</span><br>
+    <span class="rfile">│   └── saved/                      </span><span class="rcom"># Serialised model artefacts (.json)</span><br>
+    <span class="rdir">├── dashboard/</span><br>
+    <span class="rfile">│   ├── <span class="rhigh">app.py</span>                      </span><span class="rcom"># Streamlit entry point · 5 views</span><br>
+    <span class="rfile">│   ├── views/</span><br>
+    <span class="rfile">│   │   ├── price_predictions.py    </span><span class="rcom"># Actual vs predicted price chart</span><br>
+    <span class="rfile">│   │   ├── oi_predictions.py       </span><span class="rcom"># Open interest forecast chart</span><br>
+    <span class="rfile">│   │   ├── export_sales.py         </span><span class="rcom"># USDA pipeline + Shipment % KPI</span><br>
+    <span class="rfile">│   │   ├── cot_report.py           </span><span class="rcom"># COT positioning visualisation</span><br>
+    <span class="rfile">│   │   └── yarn_cotlook.py         </span><span class="rcom"># CCF yarn + Cotlook index charts</span><br>
+    <span class="rdir">├── sql/</span><br>
+    <span class="rfile">│   ├── materialized_view.sql       </span><span class="rcom"># 8-CTE analytics view DDL</span><br>
+    <span class="rfile">│   ├── schema_staging.sql          </span><br>
+    <span class="rfile">│   └── schema_prod.sql             </span><br>
+    <span class="rfile">├── .env.example</span><br>
+    <span class="rfile">├── requirements.txt</span><br>
+    <span class="rfile">└── README.md</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Cotton<span>IQ</span></div>
+  <div class="footer-mid">Python · XGBoost · PostgreSQL · Streamlit · AWS RDS</div>
+  <ul class="footer-links">
+    <li><a href="#">README.md</a></li>
+    <li><a href="#">/pipelines</a></li>
+    <li><a href="#">/models</a></li>
+    <li><a href="#">/dashboard</a></li>
+  </ul>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('vis');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
